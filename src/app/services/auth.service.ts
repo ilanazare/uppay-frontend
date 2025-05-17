@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID, Inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of, tap, throwError } from 'rxjs';
@@ -6,6 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 import { LoginRequest } from '../models/login-request';
 import { LoginResponse } from '../models/login-response';
 import { JwtPayload } from '../models/jwt-payload';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ import { JwtPayload } from '../models/jwt-payload';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   private readonly authUrl = '/api/auth/login';
   private tokenSubject = new BehaviorSubject<string | null>(this.getTokenFromStorage());
@@ -69,16 +71,23 @@ export class AuthService {
   }
 
   private storeToken(token: string): void {
-    localStorage.setItem('auth_token', token);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('auth_token', token);
+    }
     this.tokenSubject.next(token);
   }
 
   private clearToken(): void {
-    localStorage.removeItem('auth_token');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('auth_token');
+    }
     this.tokenSubject.next(null);
   }
 
   public getTokenFromStorage(): string | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
     const token = localStorage.getItem('auth_token');
     return token && !this.isTokenExpired(token) ? token : null;
   }
@@ -90,10 +99,8 @@ export class AuthService {
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An unknown error occurred';
     if (error.error instanceof ErrorEvent) {
-      
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      
       if (error.status === 401) {
         errorMessage = 'Invalid username or password';
       } else if (error.status === 0) {
