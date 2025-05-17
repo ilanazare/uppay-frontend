@@ -1,0 +1,143 @@
+<div class="loan-container">
+  <h2>Loan Application</h2>
+  <nav>
+    <a routerLink="/customer" routerLinkActive="active">Clientes</a>
+    <a routerLink="/fee" routerLinkActive="active">Taxas</a>
+</nav>
+  <!-- Success Message -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+  
+  <form [formGroup]="loanForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-group">
+      <label for="customer">Customer Name</label>
+      <input 
+        type="text" 
+        id="customer" 
+        formControlName="customer" 
+        class="form-control"
+        [ngClass]="{ 'is-invalid': loanForm.get('customer')?.invalid && (loanForm.get('customer')?.dirty || loanForm.get('customer')?.touched) }">
+      <div *ngIf="loanForm.get('customer')?.invalid && (loanForm.get('customer')?.dirty || loanForm.get('customer')?.touched)" 
+           class="invalid-feedback">
+        <div *ngIf="loanForm.get('customer')?.errors?.['required']">
+          Customer name is required
+        </div>
+        <div *ngIf="loanForm.get('customer')?.errors?.['minlength']">
+          Customer name must be at least 3 characters long
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="flag">Credit Card Flag</label>
+      <select 
+        id="flag" 
+        formControlName="flag" 
+        class="form-control"
+        [ngClass]="{ 'is-invalid': loanForm.get('flag')?.invalid && (loanForm.get('flag')?.dirty || loanForm.get('flag')?.touched) }">
+        <option value="">Select a flag</option>
+        <option *ngFor="let flag of flagOptions" [value]="flag">{{ flag }}</option>
+      </select>
+      <div *ngIf="loanForm.get('flag')?.invalid && (loanForm.get('flag')?.dirty || loanForm.get('flag')?.touched)" 
+           class="invalid-feedback">
+        Credit card flag is required
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="purchaseValue">Purchase Value</label>
+      <input 
+        type="number" 
+        id="purchaseValue" 
+        formControlName="purchaseValue" 
+        class="form-control"
+        min="0.01" 
+        step="0.01"
+        [ngClass]="{ 'is-invalid': loanForm.get('purchaseValue')?.invalid && (loanForm.get('purchaseValue')?.dirty || loanForm.get('purchaseValue')?.touched) }">
+      <div *ngIf="loanForm.get('purchaseValue')?.invalid && (loanForm.get('purchaseValue')?.dirty || loanForm.get('purchaseValue')?.touched)" 
+           class="invalid-feedback">
+        <div *ngIf="loanForm.get('purchaseValue')?.errors?.['required']">
+          Purchase value is required
+        </div>
+        <div *ngIf="loanForm.get('purchaseValue')?.errors?.['min']">
+          Purchase value must be greater than 0
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="numberOfInstallments">Number of Installments</label>
+      <input 
+        type="number" 
+        id="numberOfInstallments" 
+        formControlName="numberOfInstallments" 
+        class="form-control"
+        min="1"
+        [ngClass]="{ 'is-invalid': loanForm.get('numberOfInstallments')?.invalid && (loanForm.get('numberOfInstallments')?.dirty || loanForm.get('numberOfInstallments')?.touched) }">
+      <div *ngIf="loanForm.get('numberOfInstallments')?.invalid && (loanForm.get('numberOfInstallments')?.dirty || loanForm.get('numberOfInstallments')?.touched)" 
+           class="invalid-feedback">
+        <div *ngIf="loanForm.get('numberOfInstallments')?.errors?.['required']">
+          Number of installments is required
+        </div>
+        <div *ngIf="loanForm.get('numberOfInstallments')?.errors?.['min']">
+          Must have at least 1 installment
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label>Table Number</label>
+      <div class="btn-group" role="group">
+        <button 
+          *ngFor="let table of tableOptions" 
+          type="button" 
+          class="btn"
+          [class.btn-primary]="selectedTable === table"
+          [class.btn-outline-primary]="selectedTable !== table"
+          (click)="onTableChange(table)">
+          {{ table }}
+        </button>
+      </div>
+      <input type="hidden" formControlName="tableNumber">
+    </div>
+    
+    <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+      <span *ngIf="!isLoading">Submit</span>
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    </button>
+  </form>
+  
+  <div *ngIf="loans.length > 0" class="loan-list mt-4">
+    <h3>Previous Loans for {{ loanForm.get('customer')?.value }}</h3>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Purchase Value</th>
+          <th>Installments</th>
+          <th>Installment Value</th>
+          <th>Amount Retained</th>
+          <th>Amount Released</th>
+          <th>Purchase Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let loan of loans">
+          <td>{{ loan.id }}</td>
+          <td>{{ loan.purchaseValue | currency }}</td>
+          <td>{{ loan.numberOfInstallments }}</td>
+          <td>{{ loan.installmentValue | currency }}</td>
+          <td>{{ loan.amountRetainedByMachine | currency }}</td>
+          <td>{{ loan.amountReleasedForClient | currency }}</td>
+          <td>{{ loan.purchaseDate | date }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

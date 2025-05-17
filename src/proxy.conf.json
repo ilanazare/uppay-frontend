@@ -10,5 +10,9 @@
   "/api/customer": {
     "target": "http://localhost:8083",
     "secure": false
+  },
+  "/api/loan": {
+    "target": "http://localhost:8085",
+    "secure": false
   }
 }

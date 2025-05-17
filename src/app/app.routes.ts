@@ -8,6 +8,9 @@ export const routes: Routes = [
     {path: 'customer', loadComponent: () => import('./customer/customer.component').then(m => m.CustomerComponent),
         data: { preload: false }
     },
+    {path: 'loan', loadComponent: () => import('./loan/loan.component').then(m => m.LoanComponent),
+        data: { preload: false }
+    },
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: '**', redirectTo: 'login' }
 ];
