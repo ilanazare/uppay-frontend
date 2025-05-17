@@ -44,7 +44,7 @@ export class LoginComponent {
       )
       .subscribe({
         next: () => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/fee']);
         },
         error: (err) => {
           this.errorMessage = err.message || 'Login failed. Please try again.';

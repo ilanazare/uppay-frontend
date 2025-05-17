@@ -27,6 +27,7 @@
               }
             ],
             "styles": [
+              "src/custom-theme.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [],
@@ -101,12 +102,13 @@
               }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/azure-blue.css",
               {
                 "input": "node_modules/bootstrap/dist/css/bootstrap.min.css",
                 "inject": true,
                 "bundleName": "styles"
-            }
-          ],
+              }
+            ],
           "stylePreprocessorOptions": {
             "includePaths": [
               "node_modules"

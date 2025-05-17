@@ -44,12 +44,16 @@ export class FeeService {
       catchError(this.handleError)
     );
   }
-
+  
   findCardFeeByNumberOfInstallmentsAndFlag(
     numberTable: TableEnum,
     numberOfInstallments: number,
     flag: CreditCardFlagEnum
   ): Observable<FeeResponse> {
+    if (!numberTable || !numberOfInstallments || !flag) {
+      return throwError(() => new Error('All parameters are required'));
+    }
+    
     return this.http.get<FeeResponse>(
       this.baseUrl,
       {
