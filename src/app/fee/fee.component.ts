@@ -9,11 +9,12 @@ import { FeeResponse } from '../models/fee-response';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-fee',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CommonModule],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './fee.component.html',
   styleUrls: ['./fee.component.css']
 })

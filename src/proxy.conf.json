@@ -6,5 +6,9 @@
   "/api/fees": {
     "target": "http://localhost:8081",
     "secure": false
+  },
+  "/api/customer": {
+    "target": "http://localhost:8083",
+    "secure": false
   }
 }

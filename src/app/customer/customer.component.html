@@ -1,0 +1,71 @@
+<div class="customer-container">
+  <h2>Clientes</h2>
+  <nav>
+    <a routerLink="/fee" routerLinkActive="active">Taxas</a>
+</nav>
+  <!-- Search Section -->
+  <div class="search-section">
+    <h3>Pesquisa de Clientes</h3>
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+      <div class="form-group">
+        <label for="searchCustomer">Nome do cliente:</label>
+        <input type="text" id="searchCustomer" formControlName="searchCustomer" class="form-control">
+        <div *ngIf="searchForm.get('searchCustomer')?.invalid && searchForm.get('searchCustomer')?.touched" 
+             class="error-message">
+          O nome do cliente é obrigatório
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Procurar</button>
+      <button type="button" (click)="onClear()" class="btn btn-secondary">Limpar</button>
+    </form>
+  </div>
+
+  <!-- Customer Form Section -->
+  <div class="form-section">
+    <h3>{{ currentCustomer ? 'Atualizar cliente' : 'Novo cliente' }}</h3>
+    <form [formGroup]="customerForm">
+      <div class="form-group">
+        <label for="customer">Nome do cliente:</label>
+        <input type="text" id="customer" formControlName="customer" class="form-control">
+        <div *ngIf="customerForm.get('customer')?.invalid && customerForm.get('customer')?.touched" 
+             class="error-message">
+          <div *ngIf="customerForm.get('customer')?.errors?.['required']">O nome do cliente é obrigatório</div>
+          <div *ngIf="customerForm.get('customer')?.errors?.['minlength']">
+            O nome do cliente deve ter pelo menos 3 caracteres
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" formControlName="email" class="form-control">
+        <div *ngIf="customerForm.get('email')?.invalid && customerForm.get('email')?.touched" 
+             class="error-message">
+          <div *ngIf="customerForm.get('email')?.errors?.['required']">O email é obrigatório</div>
+          <div *ngIf="customerForm.get('email')?.errors?.['email']">Por favor, entre com um email válido</div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="button" (click)="onSave()" *ngIf="!currentCustomer" class="btn btn-success">Salvar</button>
+        <button type="button" (click)="onUpdate()" *ngIf="currentCustomer" class="btn btn-warning">Atualizar</button>
+        <button type="button" (click)="onClear()" class="btn btn-secondary">Limpar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Messages Section -->
+  <div *ngIf="message" class="alert alert-success">
+    {{ message }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Current Customer Display -->
+  <div *ngIf="currentCustomer" class="customer-details">
+    <h3>Customer Details</h3>
+    <div><strong>Nome:</strong> {{ currentCustomer.customer }}</div>
+    <div><strong>Email:</strong> {{ currentCustomer.email }}</div>
+  </div>
+</div>

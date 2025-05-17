@@ -95,7 +95,7 @@ describe('LoginComponent', () => {
     component.onSubmit();
     tick();
     
-    expect(navigateSpy).toHaveBeenCalledWith(['/']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/fee']);
     expect(component.isLoading).toBeFalse();
     expect(component.errorMessage).toBeNull();
   }));
