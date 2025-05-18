@@ -1,4 +1,4 @@
 export enum TableEnum {
-    ONE = 'ONE',
-    TWO = 'TWO'
+    ONE = 'UM',
+    TWO = 'DOIS'
 }

@@ -5,113 +5,101 @@ import { LoanRequest } from '../models/loan-request';
 import { LoanResponse } from '../models/loan-response';
 import { TableEnum } from '../enums/table-enum';
 import { CreditCardFlagEnum } from '../enums/credit-card-flag-enum';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-loan',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CommonModule],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './loan.component.html',
   styleUrls: ['./loan.component.css']
 })
 export class LoanComponent implements OnInit {
   loanForm: FormGroup;
-  loans: LoanResponse[] = [];
+  customerLoans: LoanResponse[] = [];
   isLoading = false;
-  errorMessage: string | null = null;
-  successMessage: string | null = null;
+  errorMessage = '';
+  successMessage = '';
   tableOptions = Object.values(TableEnum);
-  flagOptions = Object.values(CreditCardFlagEnum);
-  selectedTable: TableEnum = TableEnum.ONE;
+  creditCardFlags = Object.values(CreditCardFlagEnum);
 
   constructor(
     private fb: FormBuilder,
     private loanService: LoanService
   ) {
     this.loanForm = this.fb.group({
-      customer: ['', [Validators.required, Validators.minLength(3)]],
-      flag: ['', Validators.required],
-      numberOfInstallments: ['', [Validators.required, Validators.min(1)]],
-      purchaseValue: ['', [Validators.required, Validators.min(0.01)]],
-      tableNumber: [this.selectedTable, Validators.required]
+      tableNumber: [TableEnum, Validators.required],
+      customer: ['', [Validators.required, Validators.minLength(1)]],
+      flag: [CreditCardFlagEnum, Validators.required],
+      purchaseValue: ['', [Validators.required, Validators.min(1)]],
+      numberOfInstallments: ['', [Validators.required, Validators.min(1)]]
     });
   }
 
-  ngOnInit(): void {
-    this.loadLoans();
-  }
+  ngOnInit(): void {}
 
   onSubmit(): void {
     if (this.loanForm.invalid) {
-      this.markFormGroupTouched(this.loanForm);
+      this.errorMessage = 'Please fill all required fields correctly';
       return;
     }
 
     this.isLoading = true;
-    this.errorMessage = null;
-    this.successMessage = null;
+    this.errorMessage = '';
+    this.successMessage = '';
 
     const request: LoanRequest = {
       customer: this.loanForm.value.customer,
       flag: this.loanForm.value.flag,
-      numberOfInstallments: this.loanForm.value.numberOfInstallments,
-      purchaseValue: this.loanForm.value.purchaseValue
+      purchaseValue: this.loanForm.value.purchaseValue,
+      numberOfInstallments: this.loanForm.value.numberOfInstallments
     };
 
     this.loanService.saveLoan(this.loanForm.value.tableNumber, request)
-      .pipe(
-        catchError(error => {
-          this.errorMessage = error.message || 'Failed to save loan';
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Loan request submitted successfully!';
+          this.loanForm.reset({
+            tableNumber: TableEnum.ONE,
+            flag: CreditCardFlagEnum.MASTER_VISA,
+            purchaseValue: 0,
+            numberOfInstallments: 1
+          });
           this.isLoading = false;
-          return of(null);
-        })
-      )
-      .subscribe(() => {
-        this.successMessage = 'Loan saved successfully!';
-        this.isLoading = false;
-        this.loadLoans();
-        this.loanForm.reset({
-          tableNumber: this.selectedTable
-        });
+        },
+        error: (err) => {
+          this.errorMessage = err.message || 'Failed to submit loan request';
+          this.isLoading = false;
+        }
       });
   }
 
-  loadLoans(): void {
-    const customer = this.loanForm.get('customer')?.value;
-    if (!customer) return;
+  onFindLoans(): void {
+    const customer = this.loanForm.value.customer;
+    if (!customer) {
+      this.errorMessage = 'Please enter a customer name';
+      return;
+    }
 
     this.isLoading = true;
-    this.errorMessage = null;
+    this.errorMessage = '';
+    this.customerLoans = [];
 
     this.loanService.findLoansByCustomer(customer)
-      .pipe(
-        catchError(error => {
-          this.errorMessage = error.message || 'Failed to load loans';
+      .subscribe({
+        next: (loans) => {
+          this.customerLoans = loans;
           this.isLoading = false;
-          return of([]);
-        })
-      )
-      .subscribe(loans => {
-        this.loans = loans;
-        this.isLoading = false;
+        },
+        error: (err) => {
+          this.errorMessage = err.message || 'Failed to fetch loans';
+          this.isLoading = false;
+        }
       });
   }
 
-  onTableChange(table: TableEnum): void {
-    this.selectedTable = table;
-    this.loanForm.patchValue({ tableNumber: table });
-  }
-
-  private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.values(formGroup.controls).forEach(control => {
-      control.markAsTouched();
-
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouched(control);
-      }
-    });
+  formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString();
   }
 }

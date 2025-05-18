@@ -23,7 +23,7 @@ export class FeeComponent implements OnInit {
   searchForm: FormGroup;
   tableOptions = Object.values(TableEnum);
   flagOptions = Object.values(CreditCardFlagEnum);
-  installmentOptions = Array.from({ length: 12 }, (_, i) => i + 1);
+  installmentOptions = Array.from({ length: 12 }, (_, i) => i);
   fees: FeeResponse[] = [];
   isEditing = false;
   currentFeeId: number | null = null;

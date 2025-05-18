@@ -20,7 +20,7 @@
       <div class="form-group">
         <label for="searchNumberOfInstallments">Parcelas</label>
         <select id="searchNumberOfInstallments" formControlName="searchNumberOfInstallments" class="form-control">
-          <option value="">Todas as taxas</option>
+          <option value="">Parcelas</option>
           <option *ngFor="let installment of installmentOptions" [value]="installment">{{installment}}</option>
         </select>
       </div>
@@ -86,7 +86,7 @@
 
   <!-- Fees List -->
   <div class="fees-list" *ngIf="fees.length > 0">
-    <h3>Fees</h3>
+    <h3>Taxas</h3>
     <table class="table">
       <thead>
         <tr>
