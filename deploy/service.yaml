@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: goldpay-service
+  name: uppay-service
+  namespace: uppay
 spec:
   selector:
-    app: goldpay
+    app: uppay
   ports:
     - protocol: TCP
       port: 80

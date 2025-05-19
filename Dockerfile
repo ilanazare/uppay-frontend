@@ -18,7 +18,7 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy and flatten the browser directory contents to the root
-COPY --from=build /app/dist/goldpay/browser/ /usr/share/nginx/html/browser
+COPY --from=build /app/dist/uppay-frontend/browser/ /usr/share/nginx/html/browser
 
 EXPOSE 80
 

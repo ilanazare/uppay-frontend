@@ -1,20 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: goldpay
+  name: uppay
+  namespace: uppay
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: goldpay 
+      app: uppay 
   template:
     metadata:
       labels:
-        app: goldpay 
+        app: uppay 
     spec:
       containers:
-      - name: goldpay
-        image: 039074742130.dkr.ecr.sa-east-1.amazonaws.com/frontend-image:latest
+      - name: uppay
+        image: 039074742130.dkr.ecr.sa-east-1.amazonaws.com/uppay:latest
         ports:
         - containerPort: 80
         volumeMounts:
