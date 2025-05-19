@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goldpay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goldpay 
+  template:
+    metadata:
+      labels:
+        app: goldpay 
+    spec:
+      containers:
+      - name: goldpay
+        image: 039074742130.dkr.ecr.sa-east-1.amazonaws.com/frontend-image:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
