@@ -1,18 +1,18 @@
 {
   "/api/auth": {
-    "target": "http://a8e72f70f0d314895b5ddc9a9bdcf84f-1050400826.sa-east-1.elb.amazonaws.com",
+    "target": "http://user-service:8080",
     "secure": false
   },
   "/api/fees": {
-    "target": "http://a3fedee11a61b4b239510a3493f51775-1326147047.sa-east-1.elb.amazonaws.com",
+    "target": "http://fee-service:8081",
     "secure": false
   },
   "/api/customer": {
-    "target": "http://a04a1302004754bd0b58164ff71a43ff-564480400.sa-east-1.elb.amazonaws.com",
+    "target": "http://customer-service:8083",
     "secure": false
   },
   "/api/loan": {
-    "target": "http://ac9808c3bf27a4fb685c1ecb93b3a464-1705769540.sa-east-1.elb.amazonaws.com",
+    "target": "http://loan-service:8085",
     "secure": false
   }
 }

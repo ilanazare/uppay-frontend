@@ -70,14 +70,16 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Customer</th>
-          <th>Purchase Value</th>
-          <th>Installments</th>
-          <th>Installment Value</th>
-          <th>Amount Retained</th>
-          <th>Amount Released</th>
-          <th>Purchase Date</th>
+          <th>Id</th>
+          <th>Cliente</th>
+          <th>Valor do empréstimo</th>
+          <th>Número de parcelas</th>
+          <th>Valor da parcela</th>
+          <th>Valor retido pela máquina</th>
+          <th>Valor liberado pela máquina</th>
+          <th>Valor retido</th>
+          <th>Valor liberado para o cliente</th>
+          <th>Data do empréstimo</th>
         </tr>
       </thead>
       <tbody>
@@ -87,6 +89,8 @@
           <td>{{loan.purchaseValue | currency}}</td>
           <td>{{loan.numberOfInstallments}}</td>
           <td>{{loan.installmentValue | currency}}</td>
+          <td>{{loan.amountRetainedByMachine}}</td>
+          <td>{{loan.amountReleasedByMachine}}</td>
           <td>{{loan.amountRetained | currency}}</td>
           <td>{{loan.amountReleasedForClient | currency}}</td>
           <td>{{formatDate(loan.purchaseDate)}}</td>
