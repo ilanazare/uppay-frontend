@@ -3,7 +3,8 @@
 
   <nav>
     <a routerLink="/customer" routerLinkActive="active">Clientes</a>
-    <a routerLink="/fee" routerLinkActive="active">Taxas</a>
+    <a routerLink="/fee" routerLinkActive="active">Taxas</a>  
+    <a href="#" (click)="logout($event)" class="logout-link">Sair</a>
 </nav>
   
   <form [formGroup]="loanForm" (ngSubmit)="onSubmit()" novalidate>
@@ -48,11 +49,11 @@
     <div class="button-group">
       <button type="submit" class="btn btn-primary" [disabled]="isLoading">
         <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Submit Loan
+        Enviar empréstimo
       </button>
       <button type="button" class="btn btn-secondary" (click)="onFindLoans()" [disabled]="isLoading || !loanForm.get('customer')?.value">
         <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Find Loans
+        Encontrar empréstimo
       </button>
     </div>
   </form>
@@ -66,7 +67,7 @@
   </div>
 
   <div *ngIf="customerLoans.length > 0" class="loan-results">
-    <h3>Customer Loans</h3>
+    <h3>Empréstimos ao cliente</h3>
     <table class="table table-striped">
       <thead>
         <tr>
@@ -86,13 +87,13 @@
         <tr *ngFor="let loan of customerLoans">
           <td>{{loan.id}}</td>
           <td>{{loan.customer}}</td>
-          <td>{{loan.purchaseValue | currency}}</td>
+          <td>{{loan.purchaseValue | currency:'BRL':'symbol':'1.2-2'}}</td>
           <td>{{loan.numberOfInstallments}}</td>
-          <td>{{loan.installmentValue | currency}}</td>
-          <td>{{loan.amountRetainedByMachine}}</td>
-          <td>{{loan.amountReleasedByMachine}}</td>
-          <td>{{loan.amountRetained | currency}}</td>
-          <td>{{loan.amountReleasedForClient | currency}}</td>
+          <td>{{loan.installmentValue | currency:'BRL':'symbol':'1.2-2'}}</td>
+          <td>{{loan.amountRetainedByMachine | currency:'BRL':'symbol':'1.2-2'}}</td>
+          <td>{{loan.amountReleasedByMachine | currency:'BRL':'symbol':'1.2-2'}}</td>
+          <td>{{loan.amountRetained | currency:'BRL':'symbol':'1.2-2'}}</td>
+          <td>{{loan.amountReleasedForClient | currency:'BRL':'symbol':'1.2-2'}}</td>
           <td>{{formatDate(loan.purchaseDate)}}</td>
         </tr>
       </tbody>

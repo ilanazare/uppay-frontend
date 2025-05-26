@@ -19,6 +19,10 @@ export class FeeService {
 
   private getHeaders(): HttpHeaders {
     const token = this.authService.currentToken;
+    if (!token || this.authService.isTokenExpired(token)) {
+      this.authService.logout()
+      throw new Error('No authentication token available or token expired');
+    }
     return new HttpHeaders({
       'Content-Type': 'application/json',
       ...(token ? { 'Authorization': `Bearer ${token}` } : {})

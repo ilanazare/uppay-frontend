@@ -42,8 +42,9 @@ export class CustomerService {
 
   private getAuthHeaders(): { [header: string]: string } {
     const token = this.authService.currentToken;
-    if (!token) {
-      throw new Error('No authentication token available');
+    if (!token || this.authService.isTokenExpired(token)) {
+      this.authService.logout()
+      throw new Error('No authentication token available or token expired');
     }
     return {
       'Authorization': `Bearer ${token}`

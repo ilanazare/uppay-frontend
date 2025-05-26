@@ -6,7 +6,8 @@ import { LoanResponse } from '../models/loan-response';
 import { TableEnum } from '../enums/table-enum';
 import { CreditCardFlagEnum } from '../enums/credit-card-flag-enum';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-loan',
@@ -26,7 +27,9 @@ export class LoanComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private loanService: LoanService
+    private loanService: LoanService,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.loanForm = this.fb.group({
       tableNumber: [TableEnum, Validators.required],
@@ -38,6 +41,19 @@ export class LoanComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  private handleAuthError(error: any): void {
+    if (error.message === 'No authentication token available or token expired') {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    }
+  }
+
+  logout(event: Event): void {
+    event.preventDefault(); // Previne o comportamento padrão do link
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 
   onSubmit(): void {
     if (this.loanForm.invalid) {

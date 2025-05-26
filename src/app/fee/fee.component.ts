@@ -9,7 +9,7 @@ import { FeeResponse } from '../models/fee-response';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-fee',
@@ -23,7 +23,7 @@ export class FeeComponent implements OnInit {
   searchForm: FormGroup;
   tableOptions = Object.values(TableEnum);
   flagOptions = Object.values(CreditCardFlagEnum);
-  installmentOptions = Array.from({ length: 12 }, (_, i) => i);
+  installmentOptions = Array.from({ length: 13 }, (_, i) => i);
   fees: FeeResponse[] = [];
   isEditing = false;
   currentFeeId: number | null = null;
@@ -32,7 +32,8 @@ export class FeeComponent implements OnInit {
     private fb: FormBuilder,
     private feeService: FeeService,
     private snackBar: MatSnackBar,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.feeForm = this.fb.group({
       numberTable: ['', Validators.required],
@@ -51,6 +52,19 @@ export class FeeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAllFees();
+  }
+
+  private handleAuthError(error: any): void {
+    if (error.message === 'No authentication token available or token expired') {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    }
+  }
+
+  logout(event: Event): void {
+    event.preventDefault(); // Previne o comportamento padrão do link
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   loadAllFees(): void {

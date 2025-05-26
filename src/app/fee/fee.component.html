@@ -1,119 +1,142 @@
 <div class="fee-container">
   <h2>Taxas</h2>
+
   <nav>
     <a routerLink="/customer" routerLinkActive="active">Clientes</a>
-    <a routerLink="/loan" routerLinkActive="active">Empréstimo</a>
-</nav>
-  
-  <!-- Search Form -->
-  <div class="search-section">
-    <h3>Pesquisa de taxas</h3>
-    <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-form">
-      <div class="form-group">
-        <label for="searchNumberTable">Tabela</label>
-        <select id="searchNumberTable" formControlName="searchNumberTable" class="form-control">
-          <option value="">Todas as tabelas</option>
-          <option *ngFor="let table of tableOptions" [value]="table">{{table}}</option>
-        </select>
+    <a routerLink="/loan" routerLinkActive="active">Empréstimos</a>
+    <a href="#" (click)="logout($event)" class="logout-link">Sair</a>
+  </nav>
+
+  <div class="forms-container">
+    <!-- Search Form -->
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()" novalidate class="search-form">
+      <h3>Buscar Taxas</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="searchNumberTable">Número da tabela:</label>
+          <select id="searchNumberTable" formControlName="searchNumberTable" class="form-control">
+            <option value="">Todos</option>
+            <option *ngFor="let option of tableOptions" [value]="option">{{option}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="searchNumberOfInstallments">Número de parcelas:</label>
+          <select id="searchNumberOfInstallments" formControlName="searchNumberOfInstallments" class="form-control">
+            <option value="">Todas</option>
+            <option *ngFor="let option of installmentOptions" [value]="option">{{option}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="searchFlag">Bandeira:</label>
+          <select id="searchFlag" formControlName="searchFlag" class="form-control">
+            <option value="">Todas</option>
+            <option *ngFor="let flag of flagOptions" [value]="flag">{{flag}}</option>
+          </select>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="searchNumberOfInstallments">Parcelas</label>
-        <select id="searchNumberOfInstallments" formControlName="searchNumberOfInstallments" class="form-control">
-          <option value="">Parcelas</option>
-          <option *ngFor="let installment of installmentOptions" [value]="installment">{{installment}}</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="searchFlag">Carteira</label>
-        <select id="searchFlag" formControlName="searchFlag" class="form-control">
-          <option value="">Todas as carteiras</option>
-          <option *ngFor="let flag of flagOptions" [value]="flag">{{flag}}</option>
-        </select>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Procurar</button>
-    </form>
-  </div>
-
-  <!-- Fee Form -->
-  <div class="fee-form-section">
-    <h3>{{ isEditing ? 'Edit Fee' : 'Nova taxa' }}</h3>
-    <form [formGroup]="feeForm" (ngSubmit)="onSubmit()" class="fee-form">
-      <div class="form-group">
-        <label for="numberTable">Tabela</label>
-        <select id="numberTable" formControlName="numberTable" class="form-control" required>
-          <option value="" disabled selected>Selecione Tabela</option>
-          <option *ngFor="let table of tableOptions" [value]="table">{{table}}</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="numberOfInstallments">Número de parcelas</label>
-        <select id="numberOfInstallments" formControlName="numberOfInstallments" class="form-control" required>
-          <option value="" disabled selected>Selecione Parcela</option>
-          <option *ngFor="let installment of installmentOptions" [value]="installment">{{installment}}</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="flag">Carteira</label>
-        <select id="flag" formControlName="flag" class="form-control" required>
-          <option value="" disabled selected>Selecione carteira</option>
-          <option *ngFor="let flag of flagOptions" [value]="flag">{{flag}}</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="machineFee">Taxa da máquina (%)</label>
-        <input type="number" id="machineFee" formControlName="machineFee" class="form-control" step="0.01" min="0" required>
-      </div>
-
-      <div class="form-group">
-        <label for="clientFee">Taxa do cliente (%)</label>
-        <input type="number" id="clientFee" formControlName="clientFee" class="form-control" step="0.01" min="0" required>
-      </div>
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" [disabled]="feeForm.invalid">
-          {{ isEditing ? 'Atualizar' : 'Criar' }}
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">
+          Buscar
         </button>
-        <button type="button" class="btn btn-secondary" (click)="resetForm()" *ngIf="isEditing">Cancelar</button>
+      </div>
+    </form>
+
+    <!-- Fee Form -->
+    <form [formGroup]="feeForm" (ngSubmit)="onSubmit()" novalidate class="fee-form">
+      <h3>{{ isEditing ? 'Editar Taxa' : 'Adicionar Taxa' }}</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="numberTable">Número da tabela:</label>
+          <select id="numberTable" formControlName="numberTable" class="form-control">
+            <option *ngFor="let option of tableOptions" [value]="option">{{option}}</option>
+          </select>
+          <div *ngIf="feeForm.get('numberTable')?.invalid && feeForm.get('numberTable')?.touched" class="error-message">
+            Número da tabela é obrigatório
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="numberOfInstallments">Número de parcelas:</label>
+          <select id="numberOfInstallments" formControlName="numberOfInstallments" class="form-control">
+            <option *ngFor="let option of installmentOptions" [value]="option">{{option}}</option>
+          </select>
+          <div *ngIf="feeForm.get('numberOfInstallments')?.invalid && feeForm.get('numberOfInstallments')?.touched" class="error-message">
+            Número de parcelas deve ser entre 0 e 12
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="flag">Bandeira:</label>
+          <select id="flag" formControlName="flag" class="form-control">
+            <option *ngFor="let flag of flagOptions" [value]="flag">{{flag}}</option>
+          </select>
+          <div *ngIf="feeForm.get('flag')?.invalid && feeForm.get('flag')?.touched" class="error-message">
+            Bandeira é obrigatória
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="machineFee">Taxa da máquina (%):</label>
+          <input id="machineFee" type="number" formControlName="machineFee" class="form-control" min="0" step="0.01">
+          <div *ngIf="feeForm.get('machineFee')?.invalid && feeForm.get('machineFee')?.touched" class="error-message">
+            Taxa da máquina deve ser maior ou igual a 0
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="clientFee">Taxa do cliente (%):</label>
+          <input id="clientFee" type="number" formControlName="clientFee" class="form-control" min="0" step="0.01">
+          <div *ngIf="feeForm.get('clientFee')?.invalid && feeForm.get('clientFee')?.touched" class="error-message">
+            Taxa do cliente deve ser maior ou igual a 0
+          </div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">
+          {{ isEditing ? 'Atualizar' : 'Salvar' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="resetForm()" *ngIf="isEditing">
+          Cancelar
+        </button>
       </div>
     </form>
   </div>
 
-  <!-- Fees List -->
-  <div class="fees-list" *ngIf="fees.length > 0">
-    <h3>Taxas</h3>
-    <table class="table">
+  <div *ngIf="fees.length > 0" class="fee-results">
+    <h3>Taxas Cadastradas</h3>
+    <table class="table table-striped">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Tabela</th>
           <th>Parcelas</th>
-          <th>Carteira</th>
-          <th>Taxa da máquina</th>
-          <th>Taxa do cliente</th>
-          <th>Actions</th>
+          <th>Bandeira</th>
+          <th>Taxa Máquina</th>
+          <th>Taxa Cliente</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let fee of fees">
-          <td>{{ fee.numberTable }}</td>
-          <td>{{ fee.numberOfInstallments }}</td>
-          <td>{{ fee.flag }}</td>
-          <td>{{ fee.machineFee }}%</td>
-          <td>{{ fee.clientFee }}%</td>
+          <td>{{fee.id}}</td>
+          <td>{{fee.numberTable}}</td>
+          <td>{{fee.numberOfInstallments}}</td>
+          <td>{{fee.flag}}</td>
+          <td>{{fee.machineFee }}%</td>
+          <td>{{fee.clientFee }}%</td>
           <td>
-            <button class="btn btn-sm btn-edit" (click)="editFee(fee)">Editar</button>
+            <button (click)="editFee(fee)" class="btn btn-sm btn-warning">Editar</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="no-fees" *ngIf="fees.length === 0">
-    <p>No fees found. Create a new fee or adjust your search criteria.</p>
+  <div *ngIf="fees.length === 0 && searchForm.dirty" class="no-results">
+    Nenhuma taxa encontrada com os critérios especificados.
   </div>
 </div>

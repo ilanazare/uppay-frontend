@@ -32,14 +32,17 @@
   transition: background-color 0.3s;
 }
 
-.loan-container nav a:hover {
-  background-color: #0056b3;
-  font-weight: bold;
+.logout-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 16px;
+  background-color: #dc3545;
+  border-radius: 4px;
+  margin-left: auto;
 }
 
-.loan-container nav a.active {
-  color: #fff;
-  background-color: #007bff;
+.logout-link:hover {
+  background-color: #c82333;
 }
 
 /* Form styling */

@@ -1,72 +1,74 @@
 <div class="customer-container">
   <h2>Clientes</h2>
+
   <nav>
+    <a routerLink="/loan" routerLinkActive="active">Empréstimos</a>
     <a routerLink="/fee" routerLinkActive="active">Taxas</a>
-    <a routerLink="/loan" routerLinkActive="active">Empréstimo</a>
-</nav>
-  <!-- Search Section -->
-  <div class="search-section">
-    <h3>Pesquisa de Clientes</h3>
-    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+    <a href="#" (click)="logout($event)" class="logout-link">Sair</a>
+  </nav>
+
+  <div class="customer-forms">
+    <!-- Search Form -->
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()" novalidate class="search-form">
       <div class="form-group">
-        <label for="searchCustomer">Nome do cliente:</label>
-        <input type="text" id="searchCustomer" formControlName="searchCustomer" class="form-control">
-        <div *ngIf="searchForm.get('searchCustomer')?.invalid && searchForm.get('searchCustomer')?.touched" 
-             class="error-message">
-          O nome do cliente é obrigatório
+        <label for="searchCustomer">Buscar Cliente:</label>
+        <input id="searchCustomer" type="text" formControlName="searchCustomer" class="form-control" placeholder="Digite o nome do cliente">
+        <div *ngIf="searchForm.get('searchCustomer')?.invalid && searchForm.get('searchCustomer')?.touched" class="error-message">
+          Por favor, digite um nome de cliente para buscar
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Procurar</button>
-      <button type="button" (click)="onClear()" class="btn btn-secondary">Limpar</button>
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <button type="button" class="btn btn-secondary" (click)="onClear()">Limpar</button>
+      </div>
     </form>
-  </div>
 
-  <!-- Customer Form Section -->
-  <div class="form-section">
-    <h3>{{ currentCustomer ? 'Atualizar cliente' : 'Novo cliente' }}</h3>
-    <form [formGroup]="customerForm">
+    <!-- Customer Form -->
+    <form [formGroup]="customerForm" (ngSubmit)="currentCustomer ? onUpdate() : onSave()" novalidate class="customer-form">
       <div class="form-group">
-        <label for="customer">Nome do cliente:</label>
-        <input type="text" id="customer" formControlName="customer" class="form-control">
-        <div *ngIf="customerForm.get('customer')?.invalid && customerForm.get('customer')?.touched" 
-             class="error-message">
-          <div *ngIf="customerForm.get('customer')?.errors?.['required']">O nome do cliente é obrigatório</div>
-          <div *ngIf="customerForm.get('customer')?.errors?.['minlength']">
-            O nome do cliente deve ter pelo menos 3 caracteres
-          </div>
+        <label for="customer">Nome do Cliente:</label>
+        <input id="customer" type="text" formControlName="customer" class="form-control" placeholder="Digite o nome do cliente">
+        <div *ngIf="customerForm.get('customer')?.invalid && customerForm.get('customer')?.touched" class="error-message">
+          O nome do cliente é obrigatório e deve ter pelo menos 3 caracteres
         </div>
       </div>
 
       <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" id="email" formControlName="email" class="form-control">
-        <div *ngIf="customerForm.get('email')?.invalid && customerForm.get('email')?.touched" 
-             class="error-message">
-          <div *ngIf="customerForm.get('email')?.errors?.['required']">O email é obrigatório</div>
-          <div *ngIf="customerForm.get('email')?.errors?.['email']">Por favor, entre com um email válido</div>
+        <input id="email" type="email" formControlName="email" class="form-control" placeholder="Digite o email do cliente">
+        <div *ngIf="customerForm.get('email')?.invalid && customerForm.get('email')?.touched" class="error-message">
+          Por favor, digite um email válido
         </div>
       </div>
 
       <div class="button-group">
-        <button type="button" (click)="onSave()" *ngIf="!currentCustomer" class="btn btn-success">Salvar</button>
-        <button type="button" (click)="onUpdate()" *ngIf="currentCustomer" class="btn btn-warning">Atualizar</button>
-        <button type="button" (click)="onClear()" class="btn btn-secondary">Limpar</button>
+        <button type="submit" class="btn btn-primary">
+          {{ currentCustomer ? 'Atualizar' : 'Salvar' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="onClear()">Limpar</button>
       </div>
     </form>
   </div>
 
-  <!-- Messages Section -->
-  <div *ngIf="message" class="alert alert-success">
-    {{ message }}
-  </div>
+  <!-- Messages -->
   <div *ngIf="errorMessage" class="alert alert-danger">
-    {{ errorMessage }}
+    {{errorMessage}}
   </div>
 
-  <!-- Current Customer Display -->
+  <div *ngIf="message" class="alert alert-success">
+    {{message}}
+  </div>
+
+  <!-- Customer Details -->
   <div *ngIf="currentCustomer" class="customer-details">
-    <h3>Customer Details</h3>
-    <div><strong>Nome:</strong> {{ currentCustomer.customer }}</div>
-    <div><strong>Email:</strong> {{ currentCustomer.email }}</div>
+    <h3>Detalhes do Cliente</h3>
+    <div class="detail-item">
+      <span class="detail-label">Nome:</span>
+      <span class="detail-value">{{currentCustomer.customer}}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Email:</span>
+      <span class="detail-value">{{currentCustomer.email}}</span>
+    </div>
   </div>
 </div>

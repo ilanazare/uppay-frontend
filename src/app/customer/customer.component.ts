@@ -4,7 +4,9 @@ import { CustomerService } from '../services/customer.service';
 import { CustomerRequest } from '../models/customer-request';
 import { CustomerResponse } from '../models/customer-response';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+
 
 @Component({
   selector: 'app-customer',
@@ -22,7 +24,9 @@ export class CustomerComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private customerService: CustomerService
+    private customerService: CustomerService,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.customerForm = this.fb.group({
       customer: ['', [Validators.required, Validators.minLength(3)]],
@@ -35,6 +39,19 @@ export class CustomerComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  private handleAuthError(error: any): void {
+    if (error.message === 'No authentication token available or token expired') {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    }
+  }
+
+  logout(event: Event): void {
+    event.preventDefault(); // Previne o comportamento padrão do link
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 
   onSave(): void {
     if (this.customerForm.invalid) {
